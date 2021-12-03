@@ -72,7 +72,50 @@ fun day2() {
     println(pos.first * pos.second)
 }
 
+fun day3() {
+
+    fun convertAndMultiply(first: String, other: String): Int {
+        return listOf(first, other).map { it -> Integer.parseInt(it, 2)}.reduce { acc, next -> acc * next }
+    }
+
+    fun commonBit(candidates: List<String>, idx: Int, preferHigh: Boolean): Char {
+        var count: Map<Char, Int> = candidates.map { it -> it.get(idx) }. groupingBy { it }.eachCount()
+        if (count.getOrDefault('1', 0) == count.getOrDefault('0', 0)) { return if (preferHigh) '1' else '0' }
+        if (count.getOrDefault('1', 0) > count.getOrDefault('0', 0)) { return if (preferHigh) '1' else '0' }
+        return if (preferHigh) '0' else '1'
+    }
+    val input = readlinesFromDay(3);
+    var gamma_rate = ""
+    for (idx: Int in input[0].indices) {
+        var sum = 0
+        for (line: String in input) {
+            sum += line[idx].toString().toInt()
+        }
+        gamma_rate += if ((sum.toDouble() / input.size) > 0.5) "1" else "0"
+    }
+    var epsilon_rate = gamma_rate. map { it -> if (it == '0') "1" else "0" }.joinToString(separator = "")
+    var power = convertAndMultiply(epsilon_rate, gamma_rate)
+    println(power)
+
+    var co2_candidates: List<String> = input.toMutableList()
+    var o2_candidates: List<String> = input.toMutableList()
+    for (idx: Int in input[0].indices) {
+        if (o2_candidates.size > 1) {
+            var max_common = commonBit(o2_candidates, idx, true)
+            o2_candidates = o2_candidates.filter { it -> it.get(idx) == max_common} 
+        }
+        if (co2_candidates.size > 1) {
+            var min_common = commonBit(co2_candidates, idx, false)
+            co2_candidates = co2_candidates.filter { it -> it.get(idx) == min_common} 
+        }
+    }
+    var life_rating = convertAndMultiply(co2_candidates.get(0), o2_candidates.get(0))
+    println(life_rating)
+    
+}
+
 fun main() {      
     // day1();                  
-    day2();
+    // day2();
+    day3();
 }
