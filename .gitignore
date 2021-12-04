@@ -1,6 +1,11 @@
 .classpath
 .project
 .settings
+.idea
+
+out
+lib
 
 # Package Files #
 *.jar
+*.iml
