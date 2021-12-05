@@ -1,6 +1,9 @@
 package aoc2021
 
 import java.io.File
+import java.util.*
+import kotlin.math.min
+import kotlin.math.max
 
 fun readlinesFromDay(day: Int): List<String> {
     val file = File("in/${day}.txt")
@@ -153,7 +156,6 @@ fun day4() {
     val bingoCards: MutableMap<Int, MutableList<MutableList<Int>>> = mutableMapOf<Int, MutableList<MutableList<Int>>>()
     var currentBingoCardN = 0
     var currentCard: MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
-    var numFoundInCard: MutableMap<Int, MutableList<Int>> = mutableMapOf<Int, MutableList<Int>>()
     for (line in input.slice(3 until input.size)) {
         if (line.isEmpty()) {
             currentBingoCardN++
@@ -191,9 +193,55 @@ fun day4() {
     extractAndFindWinnerSum(extractedNumbers, bingoCards)
 }
 
+fun day5() {
+    fun String.parseCoords(): List<Int> {
+        return this.split(" -> ", ",").map {it -> it.toInt()}
+    }
+
+    val input = readlinesFromDay(5)
+
+    fun solve(ignoreDiagonals: Boolean): Int {
+        val sizeGrid = 1000
+        val grid = Array(sizeGrid) { Array(sizeGrid) { 0 } }
+        for (line in input) {
+            var (x1, y1, x2, y2) = line.parseCoords()
+            if (x1 == x2) {
+                for (idx in min(y1, y2)..max(y1, y2)) {
+                    grid[idx][x1] += 1
+                }
+            }
+            else if (y1 == y2) {
+                for (idx in min(x1, x2)..max(x1, x2)) {
+                    grid[y1][idx] += 1
+                }
+            }
+            else if (!ignoreDiagonals) {
+                val initialY = if (x1 < x2) y1 else y2
+                val finalY = if (x1 < x2) y2 else y1
+                val slope = if (initialY < finalY) 1 else -1
+                for ((it, idx_x) in (min(x1, x2)..max(x1, x2)).withIndex()) {
+                    grid[initialY + (slope * it)][idx_x] += 1
+                }
+            }
+        }
+        var overlap = 0
+        for (line in grid) {
+            for (number in line) {
+                if (number >= 2) {
+                    overlap += 1
+                }
+            }
+        }
+        return overlap
+    }
+    println(solve(true))
+    println(solve(false))
+}
+
 fun main() {     
     // day1()              
     // day2()
-    day3()
+    // day3()
     // day4()
+    day5()
 }
