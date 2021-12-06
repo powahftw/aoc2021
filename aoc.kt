@@ -1,6 +1,7 @@
 package aoc2021
 
 import java.io.File
+import java.math.BigInteger
 import java.util.*
 import kotlin.math.min
 import kotlin.math.max
@@ -238,10 +239,37 @@ fun day5() {
     println(solve(false))
 }
 
+fun day6() {
+
+    val input = readlinesFromDay(6)
+
+    fun solve(days: Int): BigInteger {
+        var fishes_count = input[0].split(",").map { it -> it.toInt() }.groupingBy { it }.eachCount()
+        var fishes = Array<BigInteger>(9) { BigInteger.valueOf(fishes_count.getOrDefault(it, 0).toLong()) }
+        for (step in 1..days) {
+            var next_it = Array<BigInteger>(9) { BigInteger.ZERO }
+            for (idx in fishes.indices) {
+                if (idx == 0) {
+                    next_it[8] += fishes[idx]
+                    next_it[6] += fishes[idx]
+                } else {
+                    next_it[idx - 1] += fishes[idx]
+                }
+            }
+            fishes = next_it
+        }
+        return fishes.fold(BigInteger.ZERO) { acc, e -> acc + e }
+    }
+
+    println(solve(80))
+    println(solve(256))
+}
+
 fun main() {     
     // day1()              
     // day2()
     // day3()
     // day4()
-    day5()
+    // day5()
+    day6()
 }
