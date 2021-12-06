@@ -2,7 +2,6 @@ package aoc2021
 
 import java.io.File
 import java.math.BigInteger
-import java.util.*
 import kotlin.math.min
 import kotlin.math.max
 
@@ -205,7 +204,7 @@ fun day5() {
         val sizeGrid = 1000
         val grid = Array(sizeGrid) { Array(sizeGrid) { 0 } }
         for (line in input) {
-            var (x1, y1, x2, y2) = line.parseCoords()
+            val (x1, y1, x2, y2) = line.parseCoords()
             if (x1 == x2) {
                 for (idx in min(y1, y2)..max(y1, y2)) {
                     grid[idx][x1] += 1
@@ -244,19 +243,15 @@ fun day6() {
     val input = readlinesFromDay(6)
 
     fun solve(days: Int): BigInteger {
-        var fishes_count = input[0].split(",").map { it -> it.toInt() }.groupingBy { it }.eachCount()
-        var fishes = Array<BigInteger>(9) { BigInteger.valueOf(fishes_count.getOrDefault(it, 0).toLong()) }
+        val fishesCount = input[0].split(",").map { it -> it.toInt() }.groupingBy { it }.eachCount()
+        val fishes = Array<BigInteger>(9) { BigInteger.valueOf(fishesCount.getOrDefault(it, 0).toLong()) }
         for (step in 1..days) {
-            var next_it = Array<BigInteger>(9) { BigInteger.ZERO }
-            for (idx in fishes.indices) {
-                if (idx == 0) {
-                    next_it[8] += fishes[idx]
-                    next_it[6] += fishes[idx]
-                } else {
-                    next_it[idx - 1] += fishes[idx]
-                }
+            val willSpawn = fishes[0]
+            for (idx in 0..7) {
+                fishes[idx] = fishes[idx + 1]
             }
-            fishes = next_it
+            fishes[6] += willSpawn
+            fishes[8] = willSpawn
         }
         return fishes.fold(BigInteger.ZERO) { acc, e -> acc + e }
     }
