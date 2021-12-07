@@ -2,8 +2,11 @@ package aoc2021
 
 import java.io.File
 import java.math.BigInteger
+import java.util.*
+import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 fun readlinesFromDay(day: Int): List<String> {
     val file = File("in/${day}.txt")
@@ -260,11 +263,32 @@ fun day6() {
     println(solve(256))
 }
 
-fun main() {     
+fun day7() {
+
+    fun distance(x: Int, y: Int): Int {
+        var distance = 0
+        for (k in 1..abs(x - y)) {
+            distance += k
+        }
+        return distance
+    }
+
+    val crabPositions = readlinesFromDay(7)[0].split(",").map { it -> it.toInt() }.sortedBy { it }
+    val size = crabPositions.size
+    val median = (crabPositions[size / 2] + crabPositions[(size - 1)/ 2]) / 2
+    val avg = crabPositions.average()
+    val linearDistance = crabPositions.sumOf { it -> abs(it - median) }
+    val squaredDistance = crabPositions.sumOf { it -> distance(it, avg.roundToInt()) }
+    println(linearDistance)
+    println(squaredDistance)
+    }
+
+fun main() {
     // day1()              
     // day2()
     // day3()
     // day4()
     // day5()
-    day6()
+    // day6()
+     day7()
 }
