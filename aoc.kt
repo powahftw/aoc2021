@@ -311,12 +311,50 @@ fun day8() {
         patternsMap[6] = findPattern(signalPatternsSet, 6, Pair(patternsMap[1], 1))
         patternsMap[9] = findPattern(signalPatternsSet, 6, Pair(patternsMap[4], 4))
 
-
         outputSum += output.map { value -> value.toCharArray().toSet() }.map { patternsMap.indexOf(it).toString() }.reduce { acc, it -> acc + it}.toInt()
     }
     println(count1478)
     print(outputSum)
 }
+
+fun day9() {
+    val moves = listOf(Pair(1, 0), Pair(0, 1), Pair(-1, 0), Pair(0, -1))
+    val grid = readlinesFromDay(9).map { s -> s.map { it.digitToInt() }.toMutableList() }.toMutableList()
+    var sumOfRiskLevels = 0
+    val lowPoints: MutableSet<Pair<Int, Int>> = mutableSetOf()
+    for (idxR in grid.indices) {
+        for (idxC in grid[idxR].indices) {
+            var lowest = true
+            for ((dx, dy) in moves) {
+                val newR = idxR + dy
+                val newC = idxC + dx
+                val isOutOfBounds = newR < 0 || newR >= grid.size || newC < 0 || newC >= grid[idxR].size
+                if (!isOutOfBounds && grid[newR][newC] <= grid[idxR][idxC]) lowest = false
+            }
+            if (lowest) {
+                lowPoints.add(Pair(idxR, idxC))
+                sumOfRiskLevels += grid[idxR][idxC] + 1
+            }
+        }
+    }
+
+    println(sumOfRiskLevels)
+
+    fun exploreBasin(grid: MutableList<MutableList<Int>>, newR: Int, newC: Int): Int {
+        if (newR < 0 || newR >= grid.size || newC < 0 || newC >= grid[0].size) return 0
+        if (grid[newR][newC] == -1 || grid[newR][newC] == 9) return 0
+        grid[newR][newC] = -1
+        return 1 + moves.sumOf { (dx, dy) -> exploreBasin(grid, newR + dy, newC + dx) }
+    }
+
+    val basinToSize: MutableMap<Pair<Int, Int>, Int> = mutableMapOf()
+    for (lowPoint in lowPoints) {
+        basinToSize[lowPoint] = exploreBasin(grid, lowPoint.first, lowPoint.second)
+    }
+    val sizeOfBiggest3 = basinToSize.values.toList().sortedDescending().slice(0..2)
+    println(sizeOfBiggest3.reduce { acc, next -> acc * next })
+}
+
 fun main() {
     // day1()              
     // day2()
@@ -325,5 +363,6 @@ fun main() {
     // day5()
     // day6()
     // day7()
-    day8()
+    // day8()
+    day9()
 }
