@@ -6,6 +6,7 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.max
 import kotlin.math.roundToInt
+import java.util.ArrayDeque
 
 fun readlinesFromDay(day: Int): List<String> {
     val file = File("in/${day}.txt")
@@ -355,6 +356,54 @@ fun day9() {
     println(sizeOfBiggest3.reduce { acc, next -> acc * next })
 }
 
+fun day10() {
+
+    val errorScore = mapOf(')' to 3 , ']' to 57, '}' to 1197, '>' to 25137)
+    val incompleteScore = mapOf(')' to 1 , ']' to 2, '}' to 3, '>' to 4)
+    val openToClose = mapOf('(' to ')', '[' to ']', '{' to '}', '<' to '>')
+
+    fun String.isLineIncomplete(): Boolean {
+        val stack = ArrayDeque<Char>()
+        this.forEach { symbol ->
+            if (openToClose.contains(symbol)) stack.push(symbol)
+            else if (stack.size > 0 && openToClose[stack.peek()] == symbol) stack.pop()
+            else return false
+        }
+        return !stack.isEmpty()
+    }
+
+    fun String.syntaxErrorScore(): Int {
+        val stack = ArrayDeque<Char>()
+        this.forEach { symbol ->
+            if (openToClose.contains(symbol)) stack.push(symbol)
+            else if (stack.size > 0 && openToClose[stack.peek()] == symbol) stack.pop()
+            else return errorScore[symbol]!!
+        }
+        return 0
+    }
+
+    fun String.incompleteScore(): BigInteger {
+        val stack = ArrayDeque<Char>()
+        this.forEach { symbol ->
+            if (openToClose.contains(symbol)) stack.push(symbol)
+            else if (stack.size > 0 && openToClose[stack.peek()] == symbol) stack.pop()
+        }
+        var score = BigInteger.ZERO
+        while (!stack.isEmpty()) {
+            score = score * 5.toBigInteger() + incompleteScore[openToClose[stack.pop()]]!!.toBigInteger()
+        }
+        return score
+    }
+
+    val totSyntaxErrorScore = readlinesFromDay(10).filter { line -> !line.isLineIncomplete() }.sumOf { line -> line.syntaxErrorScore() }
+    val incompleteLinesScores = readlinesFromDay(10).filter { line -> line.isLineIncomplete()}.map { line -> line.incompleteScore() }.sortedBy { it }
+
+    println(totSyntaxErrorScore)
+    println(incompleteLinesScores[incompleteLinesScores.size / 2])
+
+
+}
+
 fun main() {
     // day1()              
     // day2()
@@ -364,5 +413,6 @@ fun main() {
     // day6()
     // day7()
     // day8()
-    day9()
+    // day9()
+    day10()
 }
