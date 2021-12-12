@@ -156,14 +156,14 @@ fun day4() {
 
     val input = readlinesFromDay(4)
     val extractedNumbers = input.first().split(",").map { it -> it.toInt() }
-    val bingoCards: MutableMap<Int, MutableList<MutableList<Int>>> = mutableMapOf<Int, MutableList<MutableList<Int>>>()
+    val bingoCards: MutableMap<Int, MutableList<MutableList<Int>>> = mutableMapOf()
     var currentBingoCardN = 0
     var currentCard: MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
     for (line in input.slice(3 until input.size)) {
         if (line.isEmpty()) {
             currentBingoCardN++
             bingoCards[currentBingoCardN] = currentCard
-            currentCard = mutableListOf<MutableList<Int>>()
+            currentCard = mutableListOf()
         }
         else {
             val foundNumbers = line.trim().split(" +".toRegex()).map { it -> it.toInt() }.toMutableList()
@@ -172,7 +172,6 @@ fun day4() {
     }
     currentBingoCardN++
     bingoCards[currentBingoCardN] = currentCard
-    println(bingoCards)
 
     fun extractAndFindWinnerSum(extractedNumbers: List<Int>, bingoCards: MutableMap<Int, MutableList<MutableList<Int>>>) {
         val winners: MutableSet<Int> = mutableSetOf<Int>()
@@ -458,8 +457,44 @@ fun day11() {
     println(synchronizedFlashStep)
 }
 
+
+fun day12() {
+    fun String.isSmallCave(): Boolean {
+        return this.all { it.isLowerCase() }
+    }
+
+    val grid: MutableMap<String, MutableSet<String>> = mutableMapOf()
+    readlinesFromDay(12).map { line -> line.split("-") }.forEach { (from, to) ->
+        if (!grid.contains(from)) grid[from] = mutableSetOf()
+        if (!grid.contains(to)) grid[to] = mutableSetOf()
+        grid[from]?.add(to)
+        grid[to]?.add(from)
+    }
+
+    fun visitCave(currPos: String, grid: MutableMap<String, MutableSet<String>>, visitedSoFar: MutableList<String>, usedDoubleVisit: Boolean): Set<String> {
+        if (currPos == "end") { return setOf(visitedSoFar.joinToString(",").plus(",end")) }
+        var willUseDoubleVisit = false
+        if (currPos.isSmallCave() && visitedSoFar.contains(currPos)) {
+            if (usedDoubleVisit || currPos == "start") { return setOf() }
+            else { willUseDoubleVisit = true }
+        }
+        val solutionsFromHere: MutableSet<String> = mutableSetOf()
+        val visited = visitedSoFar.toMutableList()
+        visited.add(currPos)
+        for (moveTo in grid[currPos]!!) {
+            solutionsFromHere.addAll(visitCave(moveTo, grid, visited, usedDoubleVisit || willUseDoubleVisit))
+        }
+        return solutionsFromHere
+    }
+
+    val p1 = visitCave("start", grid, mutableListOf(), true)
+    println(p1.size)
+    val p2 = visitCave("start", grid, mutableListOf(), false)
+    println(p2.size)
+}
+
 fun main() {
-    // day1()              
+    // day1()
     // day2()
     // day3()
     // day4()
@@ -469,5 +504,7 @@ fun main() {
     // day8()
     // day9()
     // day10()
-    day11()
+    // day11()
+    day12()
+
 }
