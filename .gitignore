@@ -1,7 +1,10 @@
+.gradle
 .classpath
 .project
 .settings
 .idea
+
+build
 
 out
 lib
