@@ -1,5 +1,6 @@
 package days
 
+import Cord
 import Day
 import kotlin.math.max
 
@@ -15,7 +16,7 @@ class Day17 : Day() {
 
     var downLeft = Cord(248, -85)
     var upRight = Cord(285, -56)
-    
+
     var maxHOverall = 0
     var vCandidates = mutableSetOf<Pair<Int, Int>>()
 

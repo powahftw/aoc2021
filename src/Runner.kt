@@ -33,6 +33,11 @@ fun solveLast() {
     days.last().solveP2()
 }
 
+fun solveDay(day: Int) {
+    days.get(day - 1).solveP1()
+    days.get(day - 1).solveP2()
+}
+
 fun main() {
     solveAll()
 }

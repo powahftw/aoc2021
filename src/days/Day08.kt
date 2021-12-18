@@ -45,6 +45,6 @@ class Day08 : Day() {
     }
 
     override fun solveP2() {
-        print(outputSum)
+        println(outputSum)
     }
 }

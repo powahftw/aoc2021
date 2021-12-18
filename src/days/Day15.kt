@@ -1,18 +1,17 @@
 package days
 
+import Cord
 import Day
+import neighbours
+import plus
 import readlinesFromDay
 import java.util.*
 
 
 data class PQItem(val el: Cord, val cost: Int)
 
-operator fun Cord.plus(other: Cord): Cord {
-    return Cord(this.x + other.x, this.y + other.y)
-}
 
 class Day15 : Day() {
-    val neighbours = listOf(Cord(1, 0), Cord(0, 1), Cord(-1, 0), Cord(0, -1))
 
     fun getAdjPos(curr: Cord, maxR: Int, maxC: Int): List<Cord> {
         return neighbours.map { curr + it }.filter { it.x >= 0 && it.y >= 0 && it.x < maxR && it.y < maxC }

@@ -7,6 +7,17 @@ abstract class Day {
     abstract fun solveP2()
 }
 
+data class Cord(val x: Int, val y: Int)
+
+operator fun Cord.plus(other: Cord): Cord {
+    return Cord(this.x + other.x, this.y + other.y)
+}
+
+
+val neighbours = listOf(Cord(1, 0), Cord(0, 1), Cord(-1, 0), Cord(0, -1))
+
+val neighboursWithDiagonals = neighbours + listOf(Cord(1, 1), Cord(-1, -1), Cord(-1, 1), Cord(1, -1))
+
 fun readlinesFromDay(day: Int): List<String> {
     val file = File("src", "in/${day}.txt")
     if (!file.exists()) {

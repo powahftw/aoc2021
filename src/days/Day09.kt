@@ -1,11 +1,11 @@
 package days
 
 import Day
+import neighbours
 import readlinesFromDay
 
 class Day09 : Day() {
 
-    val moves = listOf(Pair(1, 0), Pair(0, 1), Pair(-1, 0), Pair(0, -1))
     val grid = readlinesFromDay(9).map { s -> s.map { it.digitToInt() }.toMutableList() }.toMutableList()
     val lowPoints: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
@@ -14,7 +14,7 @@ class Day09 : Day() {
         for (idxR in grid.indices) {
             for (idxC in grid[idxR].indices) {
                 var lowest = true
-                for ((dx, dy) in moves) {
+                for ((dx, dy) in neighbours) {
                     val newR = idxR + dy
                     val newC = idxC + dx
                     val isOutOfBounds = newR < 0 || newR >= grid.size || newC < 0 || newC >= grid[idxR].size
@@ -34,7 +34,7 @@ class Day09 : Day() {
             if (newR < 0 || newR >= grid.size || newC < 0 || newC >= grid[0].size) return 0
             if (grid[newR][newC] == -1 || grid[newR][newC] == 9) return 0
             grid[newR][newC] = -1
-            return 1 + moves.sumOf { (dx, dy) -> exploreBasin(grid, newR + dy, newC + dx) }
+            return 1 + neighbours.sumOf { (dx, dy) -> exploreBasin(grid, newR + dy, newC + dx) }
         }
 
         val basinToSize: MutableMap<Pair<Int, Int>, Int> = mutableMapOf()
