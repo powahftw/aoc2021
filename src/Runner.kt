@@ -18,6 +18,7 @@ var days = listOf(
     Day15(),
     Day16(),
     Day17(),
+    Day20(),
 )
 
 fun solveAll() {
@@ -39,5 +40,5 @@ fun solveDay(day: Int) {
 }
 
 fun main() {
-    solveAll()
+    solveLast()
 }

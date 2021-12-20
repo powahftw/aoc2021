@@ -13,6 +13,11 @@ operator fun Cord.plus(other: Cord): Cord {
     return Cord(this.x + other.x, this.y + other.y)
 }
 
+data class Cell(val r: Int, val c: Int)
+
+operator fun Cell.plus(other: Cell): Cell {
+    return Cell(this.r + other.r, this.c + other.c)
+}
 
 val neighbours = listOf(Cord(1, 0), Cord(0, 1), Cord(-1, 0), Cord(0, -1))
 
