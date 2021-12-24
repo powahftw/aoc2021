@@ -21,6 +21,7 @@ var days = listOf(
     Day20(),
     Day21(),
     Day22(),
+    Day24(),
 )
 
 fun solveAll() {
